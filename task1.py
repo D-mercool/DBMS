@@ -80,8 +80,7 @@ def user_interface():
     
     queue = 'None'
     while True:
-        number = enter_element('Введите номер пункта меню: ',
-                               'Введенного номера нет в МЕНЮ. Попробуйте еще раз.',
+        number = enter_element_number('Введите номер пункта меню: ',
                                'Вы ввели не верный номер. Попробуйте еще раз')
 
         if number == 1:
@@ -105,16 +104,12 @@ def user_interface():
         else:
             print('Введенного номера нет в МЕНЮ. Попробуйте еще раз.')
 
-def enter_element(text_input,
-                  text_else='Введённое число не соответствует заданному диапазону. Попробуйте еще раз...',
-                  text_except='Вы ввели не целое число. Попробуйте еще раз...'):
+def enter_element_number(text_input,
+                  text_except='Вы ввели не число. Попробуйте еще раз...'):
     while True:
         try:
-            element = int(input(text_input))
-            if 0 < element:
-                return element
-            else:
-                print(text_else)
+            element = float(input(text_input))
+            return element
         except ValueError:
             print(text_except)
 
@@ -125,9 +120,9 @@ def wrapper(queue, target):
     target(queue)
 
 def create_queue():
-    size = enter_element('\nВведите размер очереди (целое положительно число): ')
+    size = enter_element_number('\nВведите размер очереди (целое положительно число): ')
     values = get_random_values(size)
-    
+        
     queue = PriorityQueue(values)
     queue.heapify()
     print('Очередь с приоритетом имеет вид: ')
@@ -143,7 +138,7 @@ def create_empty_queue():
     return queue
 
 def push_element(queue):
-    element = enter_element('Введите целое положительное число: ')
+    element = enter_element_number('Введите число: ')
     queue.push(element)
     print('Элемент успешно добавлен!')
 
@@ -155,18 +150,18 @@ def pop_element(queue):
         print('\nПустая очередь!')
 
 def replace_element(queue):
-    element = enter_element('Введите целове положительное число: ')
+    element = enter_element_number('Введите число: ')
     queue.replace(element)
     print('Элемент успешно добавлен!')
     
 def push_elements(queue):
-    size = enter_element('Сколько добавляем элементов?: ')
-    [push_element(queue) for _ in range(size)]
+    size = enter_element_number('Сколько добавляем элементов?: ')
+    [push_element(queue) for _ in range(int(size))]
 
 def print_queue(queue):
     queue.print()
 
 def get_random_values(size, minimum = 1, maximum = 100):
-    return [random.randint(minimum, maximum) for _ in range(size)]
+    return [random.uniform(minimum, maximum) for _ in range(int(size)) if int(size) > 0 ]
 
 queue = user_interface()
