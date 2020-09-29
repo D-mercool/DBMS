@@ -1,5 +1,6 @@
 import random
 import os
+import re
 
 class PriorityQueue():
     def __init__(self, queue):
@@ -143,6 +144,36 @@ def enter_element_number(text_input,
         except ValueError:
             print(text_except)
 
+def enter_element_list():
+    mass = input('Введите список объектов через запятую.' +
+                '\nЕсли хотите записать строку (пример:"ваша_строка")'+
+                '\nЕсли хотите записать число кавычки не нужны.'+
+                '\nЦелые числа пишутся через точку (пример: "a","bc",5.0): ').split(',')
+    
+    element = []
+    for i in mass:
+        if re.findall(r'[0-9]+\.[0-9]+', i) or re.findall(r'"[0-9]+\.[0-9]+"', i):
+            try:
+                element.append(float(i))
+            except Exception:
+                element.append(re.findall(r'"[0-9]+\.[0-9]+"', i)[0][1:-1])
+        elif re.findall(r'"\D+"', i):
+            try:
+                element.append(re.findall(r'"\D+"', i)[0][1:-1])
+            except Exception:
+                continue
+        elif re.findall(r'"\w+"', i):
+            try:
+                element.append(re.findall(r'"\w+"', i)[0][1:-1])
+            except Exception:
+                continue
+        else:
+            try:
+                element.append(i[1:-1])
+            except Exception:
+                continue
+    return element
+
 def wrapper(queue, target, t):
     if queue == 'None':
         print('\nОчерь не создана! Создайте очередь с приоритетом.')   
@@ -168,7 +199,7 @@ def check_type_wrapper(queue, t, target):
             queue.replace(StrComparator(element))
         print('Элемент успешно добавлен!')
     elif t == 'list':
-        element = input('Введите список объектов: ')
+        element = enter_element_list()
         if target == 'push':
             queue.push(ListComparator(element))
         elif target == 'replace':
@@ -189,7 +220,7 @@ def create_queue():
 def create_empty_queue():
     while True:
         t = input('Введите какой тип данных хотите хранить' +
-                  '(string:строка, int:целое число, float:число с плавающей точкой, list:список объектов): ')
+                  '\n(string:строка, int:целое число, float:число с плавающей точкой, list:список объектов): ')
 
         if t == 'float' or t == 'int' or t == 'list' or t == 'string':
             queue = PriorityQueue([])
@@ -206,21 +237,22 @@ def push_element(queue, t):
 def replace_element(queue, t):
     check_type_wrapper(queue, t, 'replace')
 
+def push_elements(queue, t):
+    size = enter_element_number('Сколько добавляем элементов?: ')
+    [push_element(queue, t) for _ in range(int(size))]
+
 def pop_element(queue):
     if len(queue.heap) > 0:
         element = queue.pop()
         print(f'\nЭлемент "{element}" успешно удален')
     else:
         print('\nПустая очередь!')
-    
-def push_elements(queue, t):
-    size = enter_element_number('Сколько добавляем элементов?: ')
-    [push_element(queue, t) for _ in range(int(size))]
 
 def print_queue(queue):
     queue.print()
 
 def get_random_values(size, minimum = 1, maximum = 100):
     return [random.uniform(minimum, maximum) for _ in range(int(size)) if int(size) > 0 ]
+
 
 queue = user_interface()
