@@ -46,6 +46,9 @@ class PriorityQueue():
     def print(self):
         print(self.heap)
 
+    def check(self):
+        return type(self.heap)
+
     def pop(self): #Извлечение элемента с наивысшем приоритетом
         lastelt = self.heap.pop()
         if self.heap:
@@ -65,6 +68,31 @@ class PriorityQueue():
         self.shiftup(0)
         return returnitem
 
+class ListComparator(list):
+    '''Компаратор для списков'''
+    def __gt__(self, other):
+        return len(self) > len(other)
+    def __lt__(self, other):
+        return len(self) < len(other)
+    def __ge__(self, other):
+        return len(self) >= len(other)
+    def __le__(self, other):
+        return len(self) <= len(other)
+    def __eq__(self, other):
+        return len(self) == len(other)
+
+class StrComparator(str):
+    '''Компаратор для строк'''
+    def __gt__(self, other):
+        return len(self) > len(other)
+    def __lt__(self, other):
+        return len(self) < len(other)
+    def __ge__(self, other):
+        return len(self) >= len(other)
+    def __le__(self, other):
+        return len(self) <= len(other)
+    def __eq__(self, other):
+        return len(self) == len(other)
 
 def user_interface():
     print('МЕНЮ\n')
@@ -79,24 +107,26 @@ def user_interface():
     print('\n')
     
     queue = 'None'
+    t = 'None'
+    
     while True:
         number = enter_element_number('Введите номер пункта меню: ',
-                               'Вы ввели не верный номер. Попробуйте еще раз')
+                                      'Вы ввели не верный номер. Попробуйте еще раз')
 
         if number == 1:
-            queue = create_queue()
+            queue, t = create_queue()
         elif number == 2:
-            queue = create_empty_queue()
+            queue, t = create_empty_queue()
         elif number == 3:
-            wrapper(queue, push_element)
+            wrapper(queue, push_element, t)
         elif number == 4:
-            wrapper(queue, push_elements)
+            wrapper(queue, push_elements, t)
         elif number == 5:
-            wrapper(queue, pop_element)
+            wrapper(queue, pop_element, t)
         elif number == 6:
-            wrapper(queue, replace_element)
+            wrapper(queue, replace_element, t)
         elif number == 7:
-            wrapper(queue, print_queue)
+            wrapper(queue, print_queue, t)
         elif number == 8: 
             print('До свидания!')
             return queue
@@ -105,7 +135,7 @@ def user_interface():
             print('Введенного номера нет в МЕНЮ. Попробуйте еще раз.')
 
 def enter_element_number(text_input,
-                  text_except='Вы ввели не число. Попробуйте еще раз...'):
+                         text_except='Вы ввели не число. Попробуйте еще раз...'):
     while True:
         try:
             element = float(input(text_input))
@@ -113,12 +143,38 @@ def enter_element_number(text_input,
         except ValueError:
             print(text_except)
 
-def wrapper(queue, target):
-  if queue == 'None':
-    print('\nОчерь не создана! Создайте очередь с приоритетом.')
-  else:
-    target(queue)
+def wrapper(queue, target, t):
+    if queue == 'None':
+        print('\nОчерь не создана! Создайте очередь с приоритетом.')   
+    else:
+        if target.__code__.co_argcount == 2:
+            target(queue, t)
+        else:
+            target(queue)
 
+def check_type_wrapper(queue, t, target):
+    if t == 'int' or t == 'float':
+        element = enter_element_number('Введите число: ')
+        if target == 'push':
+            queue.push(element)
+        elif target == 'replace':
+            queue.replace(element)
+        print('Элемент успешно добавлен!')
+    elif t == 'string':
+        element = input('Введите строку: ')
+        if target == 'push':
+            queue.push(StrComparator(element))
+        elif target == 'replace':
+            queue.replace(StrComparator(element))
+        print('Элемент успешно добавлен!')
+    elif t == 'list':
+        element = input('Введите список объектов: ')
+        if target == 'push':
+            queue.push(ListComparator(element))
+        elif target == 'replace':
+            queue.replace(ListComparator(element))
+        print('Элемент успешно добавлен!')
+    
 def create_queue():
     size = enter_element_number('\nВведите размер очереди (целое положительно число): ')
     values = get_random_values(size)
@@ -128,19 +184,27 @@ def create_queue():
     print('Очередь с приоритетом имеет вид: ')
     queue.print()
     
-    return queue
+    return queue, 'int'
 
 def create_empty_queue():
-    queue = PriorityQueue([])
-    print('Очередь с приоритетом имеет вид: ')
-    queue.print()
+    while True:
+        t = input('Введите какой тип данных хотите хранить' +
+                  '(string:строка, int:целое число, float:число с плавающей точкой, list:список объектов): ')
 
-    return queue
+        if t == 'float' or t == 'int' or t == 'list' or t == 'string':
+            queue = PriorityQueue([])
+            print('Очередь с приоритетом имеет вид: ')
+            queue.print()
+            print('Тип элементов: ' + t)
+            return queue, t
+        else:
+            print('Вы ввели не правильный тип данных, попробуйте еще раз...')
+            
+def push_element(queue, t):
+    check_type_wrapper(queue, t, 'push')
 
-def push_element(queue):
-    element = enter_element_number('Введите число: ')
-    queue.push(element)
-    print('Элемент успешно добавлен!')
+def replace_element(queue, t):
+    check_type_wrapper(queue, t, 'replace')
 
 def pop_element(queue):
     if len(queue.heap) > 0:
@@ -148,15 +212,10 @@ def pop_element(queue):
         print(f'\nЭлемент "{element}" успешно удален')
     else:
         print('\nПустая очередь!')
-
-def replace_element(queue):
-    element = enter_element_number('Введите число: ')
-    queue.replace(element)
-    print('Элемент успешно добавлен!')
     
-def push_elements(queue):
+def push_elements(queue, t):
     size = enter_element_number('Сколько добавляем элементов?: ')
-    [push_element(queue) for _ in range(int(size))]
+    [push_element(queue, t) for _ in range(int(size))]
 
 def print_queue(queue):
     queue.print()
