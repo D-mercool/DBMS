@@ -103,8 +103,24 @@ class StrComparator(str):
     def __eq__(self, other):
         return len(self) == len(other)
 
-def user_interface():
-    print('МЕНЮ\n')
+class DictComparator(dict):
+    '''Компаратор для строк'''
+    def __gt__(self, other):
+        return len(self) > len(other)
+    def __lt__(self, other):
+        return len(self) < len(other)
+    def __ge__(self, other):
+        return len(self) >= len(other)
+    def __le__(self, other):
+        return len(self) <= len(other)
+    def __eq__(self, other):
+        return len(self) == len(other)
+
+class Table(PriorityQueue):
+    
+
+def user_interface(name_table):
+    print('МЕНЮ Таблицы\n')
     print('1. Создать очередь с приоритетом заполненную псевдослучайными числами.')
     print('2. Создать пустую очередь ')
     print('3. Добавить новый элемент.')
@@ -124,10 +140,8 @@ def user_interface():
 
         if number == 1:
             queue, t = create_queue()
-            flag = True
         elif number == 2:
             queue, t = create_empty_queue()
-            flag = True
         elif number == 3:
             wrapper(queue, push_element, t)
         elif number == 4:
@@ -138,9 +152,9 @@ def user_interface():
             wrapper(queue, replace_element, t)
         elif number == 7:
             wrapper(queue, print_queue, t)
-        elif number == 8: 
+        elif number == 8: #Сохранение
             print('До свидания!')
-            print(queue)
+            return queue
             break
         else:
             print('Введенного номера нет в МЕНЮ. Попробуйте еще раз.')
@@ -184,6 +198,11 @@ def enter_element_list():
                 continue
     return element
 
+def enter_element_dict():
+    size = enter_element_number('\nВведите размер словаря, который хотите внести (целое положительно число): ')
+    element = dict([input('Введите ключ и значение через пробел:').split() for _ in range(int(size))])
+    return element
+
 def wrapper(queue, target, t):  
     if target.__code__.co_argcount == 2:
         target(queue, t)
@@ -212,6 +231,13 @@ def check_type_wrapper(queue, t, target):
         elif target == 'replace':
             queue.replace(ListComparator(element))
         print('Элемент успешно добавлен!')
+    elif t == 'dict':
+        element = enter_element_dict()
+        if target == 'push':
+            queue.push(DictComparator(element))
+        elif target == 'replace':
+            queue.replace(DictComparator(element))
+        print('Элемент успешно добавлен!')
     
 def create_queue():
     size = enter_element_number('\nВведите размер очереди (целое положительно число): ')
@@ -227,9 +253,9 @@ def create_queue():
 def create_empty_queue():
     while True:
         t = input('Введите какой тип данных хотите хранить' +
-                  '\n(string:строка, int:целое число, float:число с плавающей точкой, list:список объектов): ')
+                  '\n(string:строка, int:целое число, float:число с плавающей точкой, list:список объектов, dict:словарь): ')
 
-        if t == 'float' or t == 'int' or t == 'list' or t == 'string':
+        if t == 'float' or t == 'int' or t == 'list' or t == 'string' or t == 'dict':
             break
         else:
             print('Вы ввели не правильный тип данных, попробуйте еще раз...')
@@ -265,5 +291,40 @@ def print_queue(queue):
 def get_random_values(size, minimum = 1, maximum = 100):
     return [random.uniform(minimum, maximum) for _ in range(int(size)) if int(size) > 0 ]
 
+def create_database():
+    while True:
+        print('Создание новой базы данных...')
+        name_database = input('\nВведите название базы данных без пробелов: ')
 
-user_interface()
+        if len(name_database.split(' ')) == 1:
+            break
+        else:
+            print('Вы ввели недопустимое имя, попробуйте еще раз...')  
+    database = Database(name_database, PriorityQueue([]))
+    print('База данных ' + name_database + ' успешно создана!')
+    return database
+
+class Database():
+    def __init__(self, name, db):
+        self.database_name = name
+        self.database = db
+    
+    def create_table(self):
+        print('Создание новой таблицы...')
+        name_table = input('Введите имя новой таблицы: ')
+        table = user_interface(name_table)
+        self.push(name_table,  table)
+    
+    def push(self, name_table, table):
+        self.database.append(DictComparator({name_table: table}))
+
+    def print_name(self):
+        print(self.database_name)
+
+    def print_table(self):
+        print(self.database)
+        
+
+if __name__ == '__main__':
+    database = create_database()
+    database.create_table()
