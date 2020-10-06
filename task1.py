@@ -77,7 +77,7 @@ class PriorityQueue(list):
         self.shiftup(0)
         return returnitem
 
-class ListComparator(list):
+class ListComparator(list): #Сравнение по длине списка
     '''Компаратор для списков'''
     def __gt__(self, other):
         return len(self) > len(other)
@@ -90,7 +90,7 @@ class ListComparator(list):
     def __eq__(self, other):
         return len(self) == len(other)
 
-class StrComparator(str):
+class StrComparator(str): #Сравнение по длине строки
     '''Компаратор для строк'''
     def __gt__(self, other):
         return len(self) > len(other)
@@ -103,8 +103,8 @@ class StrComparator(str):
     def __eq__(self, other):
         return len(self) == len(other)
 
-class DictComparator(dict):
-    '''Компаратор для строк'''
+class DictComparator(dict): #Сравнение по длине значений словаря
+    '''Компаратор для словарей'''
     def __gt__(self, other):
         for k, v in self.items():
             length_v = len(v)
@@ -137,7 +137,7 @@ class DictComparator(dict):
         return length_v == length_o
 
 
-class Table(PriorityQueue):
+class Table(PriorityQueue): #Таблица условное название (для удобства), это просто очередь с приоритетом
     '''Компаратор для таблиц'''
     def __gt__(self, other):
         return len(self) > len(other)
@@ -150,11 +150,11 @@ class Table(PriorityQueue):
     def __eq__(self, other):
         return len(self) == len(other)
     
-    def __init__(self, table_name):
+    def __init__(self, table_name): #Конструктор
         self.name = table_name
         self.queue = self.user_interface()
         
-    def user_interface(self):
+    def user_interface(self): #Интрефейс для взаимодействия с пользователем
         print('МЕНЮ Таблицы\n')
         print('1. Создать очередь с приоритетом заполненную псевдослучайными числами.')
         print('2. Создать пустую очередь.')
@@ -166,27 +166,27 @@ class Table(PriorityQueue):
         print('8. Выйти\Сохранить.')
         print('\n')
     
-        queue = []
+        queue = [] #Нужны для проверки на пустоту
         t = 'None'
     
-        while True:
+        while True: #Бесконечный цикл для вызова функций класса
             number = enter_element_number('Введите номер пункта меню(ТАБЛИЦЫ): ',
                                           'Вы ввели не верный номер. Попробуйте еще раз')
 
             if number == 1:
-                queue, t = self.create_queue()
+                queue, t = self.create_queue() #Создание таблицы заполненное рандомными числами
             elif number == 2:
-                queue, t = self.create_empty_queue()
+                queue, t = self.create_empty_queue() #Создать пустую таблицу с выбором типа данных
             elif number == 3:
-                self.wrapper(queue, self.push_element, t)
+                self.wrapper(queue, self.push_element, t) #Добавить 1 элемент
             elif number == 4:
-                self.wrapper(queue, self.push_elements, t)
+                self.wrapper(queue, self.push_elements, t) #Добавить несколько элементов
             elif number == 5:
-                self.wrapper(queue, self.pop_element, t)
+                self.wrapper(queue, self.pop_element, t) #Удалить элемент с наивысшим приоритетом
             elif number == 6:
-                self.wrapper(queue, self.replace_element, t)
+                self.wrapper(queue, self.replace_element, t) #Заменить элемент с наивысшим приоритетом
             elif number == 7:
-                self.wrapper(queue, self.print_queue, t)
+                self.wrapper(queue, self.print_queue, t) # Вывести таблицу(очередь)
             elif number == 8: #Сохранение
                 print('До свидания!')
                 return queue
@@ -194,48 +194,52 @@ class Table(PriorityQueue):
             else:
                 print('Введенного номера нет в МЕНЮ. Попробуйте еще раз.')
 
-    def enter_element_list(self):
+    def enter_element_list(self): #Парсер ввода для элементов списка
         mass = input('Введите список объектов через запятую.' +
                     '\nЕсли хотите записать строку (пример:"ваша_строка")'+
                     '\nЕсли хотите записать число кавычки не нужны.'+
                     '\nЦелые числа пишутся через точку (пример: "a","bc",5.0): ').split(',')
     
         element = []
-        for i in mass:
-            if re.findall(r'[0-9]+\.[0-9]+', i) or re.findall(r'"[0-9]+\.[0-9]+"', i):
+        for i in mass: 
+            if re.findall(r'[0-9]+\.[0-9]+', i) or re.findall(r'"[0-9]+\.[0-9]+"', i): #Числа через точку
                 try:
                     element.append(float(i))
                 except Exception:
-                    element.append(re.findall(r'"[0-9]+\.[0-9]+"', i)[0][1:-1])
-            elif re.findall(r'"\D+"', i):
+                    element.append(re.findall(r'"[0-9]+\.[0-9]+"', i)[0][1:-1]) #Стркоа с числом
+            elif re.findall(r'"\D+"', i): #Поиск
                 try:
-                    element.append(re.findall(r'"\D+"', i)[0][1:-1])
+                    element.append(re.findall(r'"\D+"', i)[0][1:-1]) #Поиск любых символов кроме цифры
                 except Exception:
                     continue
             elif re.findall(r'"\w+"', i):
                 try:
-                    element.append(re.findall(r'"\w+"', i)[0][1:-1])
+                    element.append(re.findall(r'"\w+"', i)[0][1:-1]) #Поиск любой буквы или части слова
                 except Exception:
                     continue
             else:
                 try:
-                    element.append(i[1:-1])
+                    element.append(i[1:-1]) #Если ничего не найдет, то это просто слово
                 except Exception:
                     continue
         return element
 
-    def enter_element_dict(self):
-        size = enter_element_number('\nВведите размер словаря, который хотите внести (целое положительно число): ')
-        element = dict([input('Введите ключ и значение через пробел:').split() for _ in range(int(size))])
-        return element
+    def enter_element_dict(self): #Ввод элементов словаря
+        size = enter_element_number('\nВведите размер словаря, который хотите внести (целое положительно число): ')  
+        while True:
+            try:
+                element = dict([input('Введите ключ и значение через пробел: ').split() for _ in range(int(size))])
+                return element
+            except Exception:
+                print('Не верное значение! Попробуйте сначала')
 
-    def wrapper(self, queue, target, t):  
-        if target.__code__.co_argcount == 3:
+    def wrapper(self, queue, target, t): #Оболочка для вызова функций 
+        if target.__code__.co_argcount == 3: #Если 3 аргумента функции
             target(queue, t)
         else:
-            target(queue)
+            target(queue) #Если не 3 аргумента у функции
 
-    def check_type_wrapper(self, queue, t, target):
+    def check_type_wrapper(self, queue, t, target): #Проверка на тип данных, в зависимости от этого различный тип ввода
         if t == 'int' or t == 'float':
             element = enter_element_number('Введите число: ')
             if target == 'push':
@@ -269,7 +273,7 @@ class Table(PriorityQueue):
                 queue.replace(DictComparator(element))
                 print('Элемент успешно добавлен!')
     
-    def create_queue(self):
+    def create_queue(self): #Создание очереди с рандомными числами
         size = enter_element_number('\nВведите размер очереди (целое положительно число): ')
         values = get_random_values(size)
         
@@ -280,7 +284,7 @@ class Table(PriorityQueue):
     
         return queue, 'int'
 
-    def create_empty_queue(self):
+    def create_empty_queue(self): #создание очереди с указанием типа
         while True:
             t = input('Введите какой тип данных хотите хранить' +
                       '\n(string:строка, int:целое число, float:число с плавающей точкой, list:список объектов, dict:словарь): ')
@@ -298,36 +302,37 @@ class Table(PriorityQueue):
     
         return queue, t
                  
-    def push_element(self, queue, t):
+    def push_element(self, queue, t): #Добавление
         self.check_type_wrapper(queue, t, 'push')
-
-    def replace_element(self, queue, t):
+ 
+    def replace_element(self, queue, t): #Замена
         self.check_type_wrapper(queue, t, 'replace')
 
-    def push_elements(self, queue, t):
+    def push_elements(self, queue, t): #Добавление нескольких элементов
         size = enter_element_number('Сколько добавляем элементов?: ')
         [self.push_element(queue, t) for _ in range(int(size))]
 
-    def pop_element(self, queue):
+    def pop_element(self, queue): #Удаление элементов с наивысшим приоритетом, если очередь не пуста
         if len(queue) > 0:
             element = queue.pop_()
             print(f'\nЭлемент "{element}" успешно удален')
         else:
             print('\nПустая очередь!')
 
-    def print_queue(self, queue):
+    def print_queue(self, queue): #Вывод очереди
         queue.print()
 
 
 class Database(PriorityQueue):
-    def user_interface(self):
+    '''Класс для хранения таблиц, тип: очередь с приоритетом'''
+        
+    def user_interface(self): #Интерфейс для вызова методов
         print('МЕНЮ Базы данных\n')
         print('1. Создать новую таблицу.')
-        print('2. Вывести имя базы данных.')
-        print('3. Вывести все таблицы базы данных.')
-        print('4. Удалить таблицу с наивысшим приоритетом.')
-        print('5. Заменить таблицу (заменяет таблицу с наивысшим приоритетом).')
-        print('6. Выйти\Сохранить.')
+        print('2. Вывести все таблицы базы данных.')
+        print('3. Удалить таблицу с наивысшим приоритетом.')
+        print('4. Заменить таблицу (заменяет таблицу с наивысшим приоритетом).')
+        print('5. Выйти\Сохранить.')
         print('\n')
     
     
@@ -336,17 +341,16 @@ class Database(PriorityQueue):
                                           'Вы ввели не верный номер. Попробуйте еще раз')
 
             if number == 1:
-                self.create_table()
+                self.create_table() #Создание очереди с приоритетом
                 break
             elif number == 2:
-                self.print_name_db()
+                self.print_table() #Вывод базы данных
             elif number == 3:
-                self.print_table()
+                self.pop_table() #Удаление таблицы
             elif number == 4:
-                self.pop_table()
-            elif number == 5:
-                self.replace(self.create_table())
-            elif number == 6: #Сохранение
+                self.replace_table() #Замена таблицы
+                break
+            elif number == 5: #Сохранение
                 print('До свидания!')
                 break
             else:
@@ -365,17 +369,21 @@ class Database(PriorityQueue):
         print(self)
 
     def pop_table(self):
-        if len(self.database) > 0:
+        if len(self) > 0:
             element = self.pop_()
             print(f'\nЭлемент "{element}" успешно удален')
         else:
             print('\nПустая база данных!')
+            
+    def replace_table(self):
+        self.pop_table()
+        self.create_table()
 
 
-def get_random_values(size, minimum = 1, maximum = 100):
+def get_random_values(size, minimum = 1, maximum = 100): #Получение случайных чисел 0..100
     return [random.uniform(minimum, maximum) for _ in range(int(size)) if int(size) > 0]
 
-def create_database():
+def create_database(): #Осноаня функция Создания базы данных
     while True:
         print('Создание новой базы данных...')
         name_database = input('\nВведите название базы данных без пробелов: ')
@@ -385,12 +393,12 @@ def create_database():
         else:
             print('Вы ввели недопустимое имя, попробуйте еще раз...')
             
-    database = Database(PriorityQueue([]))      
+    database = Database(PriorityQueue([])) #Создание пустой базы данных на основе Очереди с приоритетом    
     print('База данных ' + name_database + ' успешно создана!')
-    return database, name_database
+    return database
 
 def enter_element_number(text_input,
-                         text_except='Вы ввели не число. Попробуйте еще раз...'):
+                         text_except='Вы ввели не число. Попробуйте еще раз...'): #Функция для ввода чисел
     while True:
         try:
             element = float(input(text_input))
@@ -398,8 +406,9 @@ def enter_element_number(text_input,
         except ValueError:
             print(text_except)
     
+
 if __name__ == '__main__':
-    database = Database()
+    database = create_database()
     database.user_interface()
     
     '''
