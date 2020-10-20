@@ -1,9 +1,9 @@
-from structure import PriorityQueue, ListComparator, DictComparator, StrComparator
+from structure import BinaryTree, ListComparator, DictComparator, StrComparator
 import os
 import random
 import re
 
-class Table(PriorityQueue): #Таблица условное название (для удобства), это просто очередь с приоритетом
+class Table(BinaryTree): #Таблица условное название (для удобства), это просто очередь с приоритетом
     '''Компаратор для таблиц'''
     def __gt__(self, other):
         return len(self) > len(other)
@@ -99,7 +99,7 @@ class Table(PriorityQueue): #Таблица условное название (�
         size = enter_element_number('\nВведите размер очереди (целое положительно число): ')
         values = get_random_values(size)
         
-        queue = PriorityQueue(values)
+        queue = BinaryTree(values)
         queue.heapify()
         print('Очередь с приоритетом имеет вид: ')
         queue.print()
@@ -116,7 +116,7 @@ class Table(PriorityQueue): #Таблица условное название (�
             else:
                 print('Вы ввели не правильный тип данных, попробуйте еще раз...')
             
-        queue = PriorityQueue([])
+        queue = BinaryTree([])
         queue.heapify()
         print('Очередь с приоритетом имеет вид: ')
         queue.print()
@@ -145,7 +145,7 @@ class Table(PriorityQueue): #Таблица условное название (�
         queue.print()
 
 
-class Database(PriorityQueue):
+class Database(BinaryTree):
     '''Класс для хранения таблиц, тип: очередь с приоритетом'''
     def create_table(self):
         os.system("cls")
