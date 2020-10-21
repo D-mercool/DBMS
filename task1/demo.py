@@ -1,4 +1,4 @@
-from database import Table, Database
+from database import Table, Database, enter_element_number
 
 class UserInterface(Table, Database):
     
@@ -45,10 +45,11 @@ class UserInterface(Table, Database):
     def database_menu(self): #Интерфейс для вызова методов
         print('МЕНЮ Базы данных\n')
         print('1. Создать новую таблицу.')
-        print('2. Вывести все таблицы базы данных.')
-        print('3. Удалить таблицу с наивысшим приоритетом.')
-        print('4. Заменить таблицу (заменяет таблицу с наивысшим приоритетом).')
-        print('5. Выйти\Сохранить.')
+        print('2. Загрузить базу данных.')
+        print('3. Вывести все таблицы базы данных.')
+        print('4. Удалить таблицу с наивысшим приоритетом.')
+        print('5. Заменить таблицу (заменяет таблицу с наивысшим приоритетом).')
+        print('6. Выйти\Сохранить.')
         print('\n')
     
     
@@ -60,23 +61,20 @@ class UserInterface(Table, Database):
                 self.create_table() #Создание очереди с приоритетом
                 break
             elif number == 2:
-                self.print_table() #Вывод базы данных
+                name = input('ВВедите имя базы данных: ')
+                print('База данных успешно загружена.')
+                self = UserInterface(self.open_database(name + '.txt'))
             elif number == 3:
-                self.pop_table() #Удаление таблицы
+                self.print_table() #Вывод базы данных
             elif number == 4:
+                self.pop_table() #Удаление таблицы
+            elif number == 5:
                 self.replace_table() #Замена таблицы
                 break
-            elif number == 5: #Сохранение
+            elif number == 6: #Сохранение
+                name = input('Какая назвать файл с базой данных: ')
                 print('До свидания!')
+                self.save_database(name + '.txt')
                 break
             else:
                 print('Введенного номера нет в МЕНЮ. Попробуйте еще раз.')
-
-def enter_element_number(text_input,
-                         text_except='Вы ввели не число. Попробуйте еще раз...'): #Функция для ввода чисел
-    while True:
-        try:
-            element = float(input(text_input))
-            return element
-        except ValueError:
-            print(text_except)

@@ -1,7 +1,9 @@
 from structure import BinaryTree, ListComparator, DictComparator, StrComparator
+
 import os
 import random
 import re
+import json
 
 class Table(BinaryTree): #Таблица условное название (для удобства), это просто очередь с приоритетом
     '''Компаратор для таблиц'''
@@ -169,7 +171,18 @@ class Database(BinaryTree):
     def replace_table(self):
         self.pop_table()
         self.create_table()
+    
+    def save_database(self, file_name):
+        f = open(file_name,'w')  # открытие в режиме записи
+        f.write(str(self))
+        f.close()
 
+    def open_database(self, file_name):
+        f = open(file_name,'r')
+        for line in f:
+            return Database(json.loads(line.replace("'", '"')))
+        f.close()
+        
 
 def get_random_values(size, minimum = 1, maximum = 100): #Получение случайных чисел 0..100
     return [random.uniform(minimum, maximum) for _ in range(int(size)) if int(size) > 0]
