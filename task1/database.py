@@ -57,58 +57,58 @@ class Table(BinaryTree): #Таблица условное название (дл
             except Exception:
                 print('Не верное значение! Попробуйте сначала')
 
-    def wrapper(self, queue, target, t): #Оболочка для вызова функций 
+    def wrapper(self, tree, target, t): #Оболочка для вызова функций 
         if target.__code__.co_argcount == 3: #Если 3 аргумента функции
-            target(queue, t)
+            target(tree, t)
         else:
-            target(queue) #Если не 3 аргумента у функции
+            target(tree) #Если не 3 аргумента у функции
 
-    def check_type_wrapper(self, queue, t, target): #Проверка на тип данных, в зависимости от этого различный тип ввода
+    def check_type_wrapper(self, tree, t, target): #Проверка на тип данных, в зависимости от этого различный тип ввода
         if t == 'int' or t == 'float':
             element = enter_element_number('Введите число: ')
             if target == 'push':
-                queue.push(element)
+                tree.push(element)
                 print('Элемент успешно добавлен!')
             elif target == 'replace':
-                queue.replace(element)
+                tree.replace(element)
                 print('Элемент успешно заменен!')
         elif t == 'string':
             element = input('Введите строку: ')
             if target == 'push':
-                queue.push(StrComparator(element))
+                tree.push(StrComparator(element))
                 print('Элемент успешно добавлен!')
             elif target == 'replace':
-                queue.replace(StrComparator(element))
+                tree.replace(StrComparator(element))
                 print('Элемент успешно добавлен!')
         elif t == 'list':
             element = self.enter_element_list()
             if target == 'push':
-                queue.push(ListComparator(element))
+                tree.push(ListComparator(element))
                 print('Элемент успешно добавлен!')
             elif target == 'replace':
-                queue.replace(ListComparator(element))
+                tree.replace(ListComparator(element))
                 print('Элемент успешно добавлен!')
         elif t == 'dict':
             element = self.enter_element_dict()
             if target == 'push':
-                queue.push(DictComparator(element))
+                tree.push(DictComparator(element))
                 print('Элемент успешно добавлен!')
             elif target == 'replace':
-                queue.replace(DictComparator(element))
+                tree.replace(DictComparator(element))
                 print('Элемент успешно добавлен!')
     
-    def create_queue(self): #Создание очереди с рандомными числами
+    def create_tree(self): #Создание очереди с рандомными числами
         size = enter_element_number('\nВведите размер очереди (целое положительно число): ')
         values = get_random_values(size)
         
-        queue = BinaryTree(values)
-        queue.heapify()
+        tree = BinaryTree(values)
+        tree.heapify()
         print('Очередь с приоритетом имеет вид: ')
-        queue.print()
+        tree.print()
     
-        return queue, 'int'
+        return tree, 'int'
 
-    def create_empty_queue(self): #создание очереди с указанием типа
+    def create_empty_tree(self): #создание очереди с указанием типа
         while True:
             t = input('Введите какой тип данных хотите хранить' +
                       '\n(string:строка, int:целое число, float:число с плавающей точкой, list:список объектов, dict:словарь): ')
@@ -118,33 +118,33 @@ class Table(BinaryTree): #Таблица условное название (дл
             else:
                 print('Вы ввели не правильный тип данных, попробуйте еще раз...')
             
-        queue = BinaryTree([])
-        queue.heapify()
+        tree = BinaryTree([])
+        tree.heapify()
         print('Очередь с приоритетом имеет вид: ')
-        queue.print()
+        tree.print()
         print('Тип элементов: ' + t)
     
-        return queue, t
+        return tree, t
                  
-    def push_element(self, queue, t): #Добавление
-        self.check_type_wrapper(queue, t, 'push')
+    def push_element(self, tree, t): #Добавление
+        self.check_type_wrapper(tree, t, 'push')
  
-    def replace_element(self, queue, t): #Замена
-        self.check_type_wrapper(queue, t, 'replace')
+    def replace_element(self, tree, t): #Замена
+        self.check_type_wrapper(tree, t, 'replace')
 
-    def push_elements(self, queue, t): #Добавление нескольких элементов
+    def push_elements(self, tree, t): #Добавление нескольких элементов
         size = enter_element_number('Сколько добавляем элементов?: ')
-        [self.push_element(queue, t) for _ in range(int(size))]
+        [self.push_element(tree, t) for _ in range(int(size))]
 
-    def pop_element(self, queue): #Удаление элементов с наивысшим приоритетом, если очередь не пуста
-        if len(queue) > 0:
-            element = queue.pop_()
+    def pop_element(self, tree): #Удаление элементов с наивысшим приоритетом, если очередь не пуста
+        if len(tree) > 0:
+            element = tree.pop_()
             print(f'\nЭлемент "{element}" успешно удален')
         else:
             print('\nПустая очередь!')
 
-    def print_queue(self, queue): #Вывод очереди
-        queue.print()
+    def print_tree(self, tree): #Вывод очереди
+        tree.print()
 
 
 class Database(BinaryTree):

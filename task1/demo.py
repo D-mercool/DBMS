@@ -14,7 +14,7 @@ class UserInterface(Table, Database):
         print('8. Выйти\Сохранить.')
         print('\n')
     
-        queue = [] #Нужны для проверки на пустоту
+        tree = [] #Нужны для проверки на пустоту
         t = 'None'
     
         while True: #Бесконечный цикл для вызова функций класса
@@ -22,22 +22,22 @@ class UserInterface(Table, Database):
                                           'Вы ввели не верный номер. Попробуйте еще раз')
 
             if number == 1:
-                queue, t = self.create_queue() #Создание таблицы заполненное рандомными числами
+                tree, t = self.create_tree() #Создание таблицы заполненное рандомными числами
             elif number == 2:
-                queue, t = self.create_empty_queue() #Создать пустую таблицу с выбором типа данных
+                tree, t = self.create_empty_tree() #Создать пустую таблицу с выбором типа данных
             elif number == 3:
-                self.wrapper(queue, self.push_element, t) #Добавить 1 элемент
+                self.wrapper(tree, self.push_element, t) #Добавить 1 элемент
             elif number == 4:
-                self.wrapper(queue, self.push_elements, t) #Добавить несколько элементов
+                self.wrapper(tree, self.push_elements, t) #Добавить несколько элементов
             elif number == 5:
-                self.wrapper(queue, self.pop_element, t) #Удалить элемент с наивысшим приоритетом
+                self.wrapper(tree, self.pop_element, t) #Удалить элемент с наивысшим приоритетом
             elif number == 6:
-                self.wrapper(queue, self.replace_element, t) #Заменить элемент с наивысшим приоритетом
+                self.wrapper(tree, self.replace_element, t) #Заменить элемент с наивысшим приоритетом
             elif number == 7:
-                self.wrapper(queue, self.print_queue, t) # Вывести таблицу(очередь)
+                self.wrapper(tree, self.print_tree, t) # Вывести таблицу(очередь)
             elif number == 8: #Сохранение
                 print('До свидания!')
-                return queue
+                return tree
                 break
             else:
                 print('Введенного номера нет в МЕНЮ. Попробуйте еще раз.')
