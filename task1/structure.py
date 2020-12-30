@@ -1,4 +1,4 @@
-class BinaryTree(list):
+class BinaryHeap(list):
     def __gt__(self, other):
         return len(self) > len(other)
     def __lt__(self, other):
