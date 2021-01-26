@@ -1,0 +1,2 @@
+[{'table1': [['dima', 'alex', 'bob', 'alice'], ['bob', 'alex', 'sdfddfgrg', 'hhh!', 'Moskva'], ['1', '2', 'ab', 'aaaaaaa', '44675t', 'alex']]}, 
+{'table2': [0, 1, 5, 4, 3]}]

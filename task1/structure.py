@@ -102,32 +102,12 @@ class StrComparator(str): #Сравнение по длине строки
 class DictComparator(dict): #Сравнение по длине значений словаря
     '''Компаратор для словарей'''
     def __gt__(self, other):
-        for k, v in self.items():
-            length_v = len(v)
-        for k, v in other.items():
-            length_o = len(v)
-        return length_v > length_o
+        return len(self.keys()) > len(other.keys())
     def __lt__(self, other):
-        for k, v in self.items():
-            length_v = len(v)
-        for k, v in other.items():
-            length_o = len(v)
-        return length_v < length_o
+        return len(self.keys()) < len(other.keys())
     def __ge__(self, other):
-        for k, v in self.items():
-            length_v = len(v)
-        for k, v in other.items():
-            length_o = len(v)
-        return length_v >= length_o
+        return len(self.keys()) >= len(other.keys())
     def __le__(self, other):
-        for k, v in self.items():
-            length_v = len(v)
-        for k, v in other.items():
-            length_o = len(v)
-        return length_v <= length_o
+        return len(self.keys()) <= len(other.keys())
     def __eq__(self, other):
-        for k, v in self.items():
-            length_v = len(v)
-        for k, v in other.items():
-            length_o = len(v)
-        return length_v == length_o
+        return len(self.keys()) == len(other.keys())
